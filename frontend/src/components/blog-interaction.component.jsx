@@ -1,9 +1,13 @@
-import { useContext, useEffect } from "react";
-import { BlogContext } from "../pages/blog.page";
+import { lazy, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../App";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
+
+// const BlogContext = lazy(() => import("../pages/blog.page.jsx"));
+import { BlogContext } from "../pages/blog.page";
+const SharePopup = lazy(() => import("./sharepopup.component.jsx"));
+// import SharePopup from "./sharepopup.component";
 
 const BlogInteraction = () => {
   let {
@@ -25,8 +29,13 @@ const BlogInteraction = () => {
   } = useContext(BlogContext);
 
   let {
-    userAuth: { username, access_token },
+    userAuth: { username, access_token, profile_img },
   } = useContext(UserContext);
+
+  // let { theme } = useContext(ThemeContext);
+
+  // Share popup state
+  // const [isShareOpen, setIsShareOpen] = useState(false);
 
   useEffect(() => {
     if (access_token) {
@@ -93,6 +102,8 @@ const BlogInteraction = () => {
     }
   };
 
+  // console.log(title, author_username, total_comments, total_likes, banner)
+
   return (
     <>
       <Toaster />
@@ -126,7 +137,7 @@ const BlogInteraction = () => {
           <p className="text-xl text-dark-grey">{total_comments}</p>
         </div>
 
-        <div className="flex gap-6 items-center ">
+        <div className="flex gap-6 items-center relative">
           {/* Edit */}
           {username == author_username ? (
             <Link
@@ -138,12 +149,9 @@ const BlogInteraction = () => {
           ) : (
             " "
           )}
-          {/* Tweet */}
-          <Link
-            to={`https://twitter.com/intent/tweet?text=Read ${title}&url=${location.href}`}
-          >
-            <i className="fi fi-brands-twitter text-xl hover:text-twitter"></i>
-          </Link>
+
+          {/* ddddd */}
+          <SharePopup title={title} />
         </div>
       </div>
 

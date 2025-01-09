@@ -1,12 +1,17 @@
-import React, { useContext, useRef } from "react";
-import InputBox from "../components/input.component.jsx";
-import google from "../imgs/google.png";
+import React, { lazy, useContext } from "react";
 import { Link, Navigate } from "react-router-dom";
-import AnimationWrapper from "../common/page-animation.jsx";
 import { Toaster, toast } from "react-hot-toast";
+
 import axios from "axios";
+
 import { storeInCookies } from "../common/session.jsx";
 import { UserContext } from "../App.jsx";
+
+const InputBox = lazy(() => import("../components/input.component.jsx"));
+// import InputBox from "../components/input.component.jsx";
+import google from "../imgs/google.png";
+const AnimationWrapper = lazy(() => import("../common/page-animation.jsx"));
+// import AnimationWrapper from "../common/page-animation.jsx";
 
 axios.defaults.withCredentials = true;
 
@@ -16,7 +21,6 @@ const UserAuthForm = ({ type }) => {
   //* Extracting the userAuth from UserContext, so that to render the page according the states
   let {
     userAuth: { access_token },
-    setUserAuth,
   } = useContext(UserContext);
 
   const userAuthThroughServer = async (serverRoute, formData) => {

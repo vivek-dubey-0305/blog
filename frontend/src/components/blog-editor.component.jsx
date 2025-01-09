@@ -63,7 +63,7 @@ const BlogEditor = () => {
           placeholder: "Let's Write a Blog!",
         })
       );
-    }, 2000); // 2 seconds delay
+    }, 1000); // 2 seconds delay
 
     // Cleanup function to clear timeout if the component unmounts
     return () => clearTimeout(timeout);
@@ -80,6 +80,7 @@ const BlogEditor = () => {
 
         let loadingToast = toast.loading("Uploading...");
         if (responseImageURL) {
+          // console.log(responseImageURL)
           toast.dismiss(loadingToast);
           toast.success("Uploades ✌️");
           //?Using blog state doesn't need anymore of refrence

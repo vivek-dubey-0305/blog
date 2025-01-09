@@ -1,50 +1,81 @@
+import { lazy, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import AnimationWrapper from "../common/page-animation";
-import InPageNavigation from "../components/inpage-navigation.component";
-import { useEffect, useState } from "react";
-import Loader from "../components/loader.component";
-import BlogPostCard from "../components/blog-post.component";
-import MinimalBlogPost from "../components/nobanner-blog-post.component";
-import { activeTabRef } from "../components/inpage-navigation.component";
-import NoStateMessage from "../components/nodata.component";
+
+import { activeTabRef } from "../components/inpage-navigation.component.jsx";
 import { filterPaginationData } from "../common/filter-pagination-data";
-import LoadMoreDataBtn from "../components/load-more.component";
-import { Link } from "react-router-dom";
+import { ThemeContext } from "../App";
+
+const AnimationWrapper = lazy(() => import("../common/page-animation.jsx"));
+// import AnimationWrapper from "../common/page-animation";
+
+const InPageNavigation = lazy(() =>
+  import("../components/inpage-navigation.component.jsx")
+);
+// import InPageNavigation from "../components/inpage-navigation.component";
+
+const Loader = lazy(() => import("../components/loader.component.jsx"));
+// import Loader from "../components/loader.component";
+
+const BlogPostCard = lazy(() =>
+  import("../components/blog-post.component.jsx")
+);
+// import BlogPostCard from "../components/blog-post.component";
+
+const MinimalBlogPost = lazy(() =>
+  import("../components/nobanner-blog-post.component.jsx")
+);
+// import MinimalBlogPost from "../components/nobanner-blog-post.component";
+
+const NoStateMessage = lazy(() => import("../components/nodata.component.jsx"));
+// import NoStateMessage from "../components/nodata.component";
+
+const LoadMoreDataBtn = lazy(() =>
+  import("../components/load-more.component.jsx")
+);
+// import LoadMoreDataBtn from "../components/load-more.component";
+
+const Footer = lazy(() => import("./footer.page.jsx"));
+// import Footer from "./footer.page";
 
 const HomePage = () => {
   let [blogs, setBlogs] = useState(null);
   let [trendingBlogs, setTrendinBlogs] = useState(null);
   let [pageState, setPageState] = useState("home");
 
+  let { theme } = useContext(ThemeContext);
+
+  const [isOpen, setIsOpen] = useState(false);
   let categories = [
     "programming",
-    "hollywood",
-    "film making",
     "technology",
     "gaming",
     "social media",
-    "cooking",
     "finances",
-    "travel",
     "cyber security",
-    "happy",
+    "python",
+    "AI"
   ];
 
-  const fetchLatestBlogs = ({ page = 1 }) => {
-    axios
-      .post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", { page })
-      .then(async ({ data }) => {
-        let formatedData = await filterPaginationData({
-          state: blogs,
-          data: data.blogs,
-          page,
-          countRoute: "/all-latest-blogs-count",
+  const fetchLatestBlogs = async ({ page = 1 }) => {
+    try {
+      await axios
+        .post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", { page })
+        .then(async ({ data }) => {
+          // console.log(data)
+          let formatedData = await filterPaginationData({
+            state: blogs,
+            data: data.blogs,
+            page,
+            countRoute: "/all-latest-blogs-count",
+          });
+          setBlogs(formatedData);
+        })
+        .catch((err) => {
+          console.error(err);
         });
-        setBlogs(formatedData);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    } catch (error) {
+      console.error("Error-", error);
+    }
   };
 
   const fetchTrendingBlogs = () => {
@@ -99,6 +130,7 @@ const HomePage = () => {
       return;
     }
     setPageState(category);
+    setIsOpen(false);
   };
 
   return (
@@ -106,6 +138,50 @@ const HomePage = () => {
       <section className="min-h-screen flex justify-center gap-10 px-4 md:px-8 py-8">
         {/* Main Content */}
         <div className="w-full max-w-4xl">
+          {/* <div className="right-0">CATEGORIES</div>/ */}
+          <div className="sm:inline-block md:hidden lg:hidden">
+            {/* Toggle Button */}
+            <div
+              className={`absolute right-0 p-4 cursor-pointer ${
+                theme == "dark"
+                  ? "bg-gray-800 text-rose-50"
+                  : "bg-slate-50 text-black"
+              } rounded z-10`}
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              CATEGORIES
+            </div>
+
+            {/* Dropdown Menu */}
+            {isOpen && (
+              <div
+                className={`absolute right-0 mt-12 w-48 bg-white shadow-lg rounded border border-gray-300 z-10`}
+              >
+                <ul className="py-2">
+                  {categories.map((category, index) => (
+                    <li
+                      key={index}
+                      className={`px-4 py-2 text-sm ${
+                        theme == "dark"
+                          ? "bg-gray-800 text-rose-50 hover:bg-gray-700"
+                          : "bg-slate-50 text-black hover:bg-gray-100"
+                      } cursor-pointer`}
+                      // onClick={() => {
+                      //   // setIsOpen(false);
+                      //   // alert(`Selected Category: ${category}`);
+                      //   onClick={loadBlogByCategory}
+                      // }}
+                      onClick={loadBlogByCategory}
+                    >
+                      {category}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* inPageNAv */}
           <InPageNavigation
             routes={[pageState, "trending blogs"]}
             defaultHidden={["trending blogs"]}
@@ -114,8 +190,9 @@ const HomePage = () => {
             <div className="space-y-8">
               {blogs == null ? (
                 <Loader />
-              ) : blogs?.results?.length ? (
-                blogs?.results?.map((blog, i) => (
+              ) : // <div>efe</div>
+              blogs?.results?.length ? (
+                blogs.results.map((blog, i) => (
                   <AnimationWrapper
                     key={i}
                     transition={{ duration: 0.4, delay: i * 0.1 }}
@@ -166,7 +243,7 @@ const HomePage = () => {
         <div className="min-w-[320px] lg:min-w-[400px] max-w-md border-l border-gray-100 pl-8 pt-3 max-md:hidden">
           <div className="flex flex-col gap-12 sticky top-24">
             {/* Links Section */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <Link
                 to="/about"
                 className="text-sm font-medium text-blue-600 hover:underline"
@@ -186,7 +263,7 @@ const HomePage = () => {
               >
                 FAQ's
               </Link>
-            </div>
+            </div> */}
 
             {/* Categories Section */}
             <div className="space-y-1">
@@ -197,9 +274,11 @@ const HomePage = () => {
                 {categories.map((category, i) => (
                   <button
                     onClick={loadBlogByCategory}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    className={`px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 ${
                       pageState == category
-                        ? "bg-black text-white shadow-lg transform scale-105"
+                        ? theme == "dark"
+                          ? "bg-gray-900 text-rose-50 shadow-lg transform scale-110"
+                          : "bg-black text-white shadow-lg transform scale-110"
                         : "bg-gray-100 hover:bg-gray-200 text-gray-800"
                     }`}
                     key={i}
@@ -238,10 +317,11 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      <div className="flex justify-center items-center py-4 bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400">
+      {/* <div className="flex justify-center items-center py-4 bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400">
   &copy; {new Date().getFullYear()} InsightfulBlogs. All rights reserved.
-</div>
+</div> */}
 
+      <Footer />
     </AnimationWrapper>
   );
 };

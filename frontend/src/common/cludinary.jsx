@@ -17,7 +17,7 @@ export const uploadOnCloudinary = async (img) => {
         },
       }
     );
-
+// console.log(response)  
     return response.data.imageUrl;
   } catch (error) {
     console.error("Error uploading image to server:", error);

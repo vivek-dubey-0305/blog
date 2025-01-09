@@ -21,6 +21,9 @@ export default {
               inter: ["'Inter'", "sans-serif"],
               gelasio: ["'Gelasio'", "serif"]
             },
+             animation: {
+                'spin-fast': 'spin 0.5s linear infinite', // Speeds up the default spin animation
+            },
         },
 
     },

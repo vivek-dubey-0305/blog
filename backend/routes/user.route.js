@@ -33,7 +33,7 @@ router.route("/get-profile").post(getProfile)
 
 
 // BLOGPAGE
-router.route("/get-blog").post(getBlog)
+router.route("/get-blog").post( getBlog)
 
 // like
 

@@ -97,7 +97,7 @@ export const ManagePublishedBlogCard = ({ blog }) => {
         <img
           src={banner}
           alt="Banner"
-          className="max-md:hidden lg:hidden xl:block w-28 h-28 flex-none bg-grey object-cover"
+          className="max-md:rounded-md md:rounded-lg lg:hidden xl:block w-28 h-28 flex-none bg-grey object-cover"
         />
 
         <div className="flex flex-col justify-between py-2 w-full min-w-[300px]">

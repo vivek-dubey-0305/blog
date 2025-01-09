@@ -8,6 +8,8 @@ dotenv.config();
 
 const app = express();
 
+// 7387042015
+
 
 //!----------------------------------------------------------------!//
 // * CORS: For Connecting Backend To Fronted
@@ -16,6 +18,7 @@ app.use(cors({
         if (!origin || origin === process.env.CORS_ORIGIN) {
             callback(null, true);
         } else {
+            console.error(`Blocked by CORS: ${origin}`);
             callback(new Error('Not allowed by CORS'));
         }
     },
@@ -45,6 +48,8 @@ app.use(cookieParser());
 app.use(express.static("public"));
 //*---------------------------------------*//
 
+
+app.use(express.static("build")); 
 
 //?------------------------------------------------
 //*ROUTES IMPORT

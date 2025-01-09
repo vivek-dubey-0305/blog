@@ -1,16 +1,33 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { lazy, useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import AnimationWrapper from "../common/page-animation";
-import Loader from "../components/loader.component";
-import { getDay } from "../common/date";
-import BlogInteraction from "../components/blog-interaction.component";
 import { createContext } from "react";
-import BlogPostCard from "../components/blog-post.component";
-import BlogContent from "../components/blog-content.component";
+import { getDay } from "../common/date";
+import { Helmet } from "react-helmet";
+
+const AnimationWrapper = lazy(() => import("../common/page-animation.jsx"));
+const Loader = lazy(() => import("../components/loader.component.jsx"));
+const BlogInteraction = lazy(() =>
+  import("../components/blog-interaction.component.jsx")
+);
+const BlogPostCard = lazy(() =>
+  import("../components/blog-post.component.jsx")
+);
+const BlogContent = lazy(() =>
+  import("../components/blog-content.component.jsx")
+);
+
+// import AnimationWrapper from "../common/page-animation";
+// import Loader from "../components/loader.component";
+// import BlogInteraction from "../components/blog-interaction.component";
+// import BlogPostCard from "../components/blog-post.component";
+// import BlogContent from "../components/blog-content.component";
+
 import CommentsContainer, {
   fetchComments,
-} from "../components/comments.component";
+} from "../components/comments.component.jsx";
+import Footer from "./footer.page.jsx";
+import { UserContext } from "../App.jsx";
 
 export const blogStructure = {
   title: "",
@@ -43,11 +60,20 @@ const BlogPage = () => {
     publishedAt,
   } = blog;
 
+  let { userAuth: { access_token } } = useContext(UserContext)
+
   const fetchBlog = async () => {
     axios
       .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", {
         blog_id,
-      })
+      },
+        {
+        headers:
+      {
+        Authorization: `Bearer ${access_token}`
+      }
+    }  
+    )
       .then(async ({ data: { blog } }) => {
         blog.comments = await fetchComments({
           blog_id: blog._id,
@@ -88,6 +114,18 @@ const BlogPage = () => {
 
   return (
     <AnimationWrapper>
+      {/* OGs */}
+      <Helmet>
+        <title>{blog.title || "Loading..."}</title>
+        <meta property="og:title" content={blog.title} />
+        <meta property="og:description" content={blog.des} />
+        <meta property="og:image" content={blog.banner} />
+        <meta
+          property="og:url"
+          content={`${window.location.origin}/blog/${blog_id}`}
+        />
+        <meta property="og:type" content="article" />
+      </Helmet>
       <div className="relative min-h-screen bg-light-mode dark:bg-dark-mode text-dark-text dark:text-light-text">
         {loading ? (
           <Loader />
@@ -134,7 +172,19 @@ const BlogPage = () => {
             <CommentsContainer />
 
             <div className="max-w-[900px] mx-auto py-10 px-4 lg:px-0">
-              <img src={banner} alt="Banner" className="aspect-video rounded-lg shadow-lg" />
+              <img
+                src={banner}
+                alt="Banner"
+                className="aspect-video rounded-lg shadow-lg hover:shadow-2xl 
+                transition-all duration-300 ease-in-out 
+                hover:scale-[1.02] 
+                hover:-translate-y-1
+                transform perspective-1000
+               
+                cursor-pointer
+                hover:brightness-105
+                active:scale-95"
+              />
 
               <div className="mt-8">
                 <h2 className="text-3xl font-semibold">{title}</h2>
@@ -150,7 +200,10 @@ const BlogPage = () => {
                     <p className="capitalize">
                       {fullname}
                       <br />
-                      <Link to={`/user/${author_username}`} className="text-blue-600 underline">
+                      <Link
+                        to={`/user/${author_username}`}
+                        className="text-blue-600 underline"
+                      >
                         @{author_username}
                       </Link>
                     </p>
@@ -178,7 +231,9 @@ const BlogPage = () => {
               <BlogInteraction />
 
               <div className="mt-16">
-                <h1 className="text-2xl font-medium">Similar Blogs [Recommended!]</h1>
+                <h1 className="text-2xl font-medium">
+                  Similar Blogs [Recommended!]
+                </h1>
                 <div className="mt-6 space-y-4">
                   {similarBlogs?.length > 0 ? (
                     similarBlogs.map((blog, i) => {
@@ -211,6 +266,7 @@ const BlogPage = () => {
           </BlogContext.Provider>
         )}
       </div>
+      <Footer />
     </AnimationWrapper>
   );
 };

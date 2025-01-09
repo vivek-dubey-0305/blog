@@ -60,6 +60,7 @@ const ProfilePage = () => {
       })
       .then(({ data }) => {
         const user = data.user;
+        console.log(user)
 
         if (user != null) {
           setProfile(user);
@@ -122,6 +123,8 @@ const ProfilePage = () => {
     setProfileLoaded("");
   };
 
+  // console.log(total_posts, total_reads)
+
   return (
     <AnimationWrapper>
       {loading ? (
@@ -140,7 +143,7 @@ const ProfilePage = () => {
             <p className="text-xl capitalize h-6">{fullname}</p>
 
             <p className="">
-              {total_posts.toLocaleString()} Blogs -{" "}
+              {total_posts.toLocaleString()} Blogs and 
               {total_reads.toLocaleString()} Reads
             </p>
 

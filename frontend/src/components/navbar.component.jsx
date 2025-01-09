@@ -1,14 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import React, { lazy, useContext, useEffect, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import lightLogo from "../imgs/logo-light.png";
 import darkLogo from "../imgs/logo-dark.png";
+
+import Loader from "./loader.component";
 import { ThemeContext, UserContext } from "../App";
-import UserNavigationPanel from "./user-navigation.component";
-import axios from "axios";
 import { storeInCookies } from "../common/session";
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const UserNavigationPanel = lazy(() =>
+  import("./user-navigation.component.jsx")
+);
+// import UserNavigationPanel from "./user-navigation.component";
+
+// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Navbar = () => {
   let navigate = useNavigate();
@@ -33,30 +39,42 @@ const Navbar = () => {
   // *useEffect
   useEffect(() => {
     const fetchData = async () => {
-      await delay(700);
+      // await delay(700);
       if (!access_token) {
-        console.error("AnonymyzeD");
+        // console.error("AnonymyzeD");
+        return <Loader />;
       }
-      if (access_token) {
-        await axios
-          .post(
-            import.meta.env.VITE_SERVER_DOMAIN + "/new-notification",
 
-            {
-              headers: {
-                Authorization: `Bearer ${access_token}`,
-              },
-            }
-          )
-          .then(({ data }) => {
-            setUserAuth({
-              ...userAuth,
-              ...data,
+      try {
+        if (access_token) {
+          // console.log(access_token);
+          await axios
+            .post(
+              import.meta.env.VITE_SERVER_DOMAIN + "/new-notification",
+              {},
+
+              {
+                headers: {
+                  Authorization: `Bearer ${access_token}`,
+                },
+              }
+            )
+            // console.log("data:", data)
+
+            .then(({ data }) => {
+              // console.log(data)
+              setUserAuth({
+                ...userAuth,
+                ...data,
+              });
+            })
+            .catch((err) => {
+              // console.log("ff")
+              console.error(err.message);
             });
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        }
+      } catch (error) {
+        console.error("ERROR", error);
       }
     };
     fetchData();
@@ -149,7 +167,9 @@ const Navbar = () => {
             <i
               className={
                 "fi fi-rr-" +
-                (theme == "light" ? "moon-stars" : "sun") +
+                (theme == "light"
+                  ? "moon-stars"
+                  : "moon-stars text-green-500") +
                 " text-2xl block mt-1"
               }
             ></i>

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import lightPageImageNotFound from "../imgs/404-light.png";
-import darkPageImageNotFound from "../imgs/404-dark.png";
-import lightFullLogo from "../imgs/full-logo-light.png";
-import darkFullLogo from "../imgs/full-logo-dark.png";
+// import lightPageImageNotFound from "../imgs/404-light.png";
+// import darkPageImageNotFound from "../imgs/404-dark.png";
+// import lightFullLogo from "../imgs/full-logo-light.png";
+// import darkFullLogo from "../imgs/full-logo-dark.png";
 import { useContext, useEffect, useRef } from "react";
 import { ThemeContext } from "../App";
 import * as THREE from "three";
@@ -109,32 +109,37 @@ const PageNotFound = () => {
         className="absolute top-0 left-0 w-full h-full -z-10"
       />
 
-      <div className="relative group">
+      {/* <div className="relative group">
         <img
           src={theme === "light" ? darkPageImageNotFound : lightPageImageNotFound}
           alt="404Page"
           className="select-none border-2 border-grey w-48 md:w-72 aspect-square object-cover rounded-lg shadow-xl transform transition-all duration-500 hover:scale-105 animate-float"
         />
         <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
+      </div> */}
 
-      <h1 className="text-4xl md:text-6xl font-gelasio leading-snug bg-gradient-to-r from-purple to-pink-500 bg-clip-text text-transparent animate-fade-in">
+      {/* <h1 className="text-4xl md:text-6xl font-gelasio leading-snug bg-gradient-to-r from-purple to-pink-500 bg-clip-text text-transparent animate-fade-in">
         Oops! Page Not Found
-      </h1>
+        
+      </h1> */}
 
-      <p className="text-dark-grey text-lg md:text-2xl leading-7 max-w-lg animate-fade-in-up">
+      <Link to="/">
+      {/* <i class="fi fi-ss-home"></i> */}
+      <i className="fi fi-ss-home text-3xl text-orange-500"></i>
+      </Link>
+      {/* <p className="text-dark-grey text-lg md:text-2xl leading-7 max-w-lg animate-fade-in-up">
         The page you are trying to reach doesn't exist. Head back to the
         <Link
           to="/"
-          className="text-purple underline hover:text-purple/80 transition-colors duration-300 ml-1 relative group"
+          className="text-purple underline hover:text-purple/80 transition-colors duration-300 ml-1 text-xl relative group"
         >
           Home Page
           <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
         </Link>
         .
-      </p>
+      </p> */}
 
-      <div className="mt-auto animate-fade-in">
+      {/* <div className="mt-auto animate-fade-in">
         <img
           src={theme === "light" ? darkFullLogo : lightFullLogo}
           alt="Logo"
@@ -143,7 +148,7 @@ const PageNotFound = () => {
         <p className="mt-3 md:mt-5 text-dark-grey text-sm md:text-base">
           Discover millions of stories around the globe!
         </p>
-      </div>
+      </div> */}
     </section>
   );
 };

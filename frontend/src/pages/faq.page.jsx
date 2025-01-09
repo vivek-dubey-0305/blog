@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { ThemeContext } from "../App";
-// import { ThemeContext } from "../context/theme.context";
 
 const FAQPage = () => {
   const { theme } = useContext(ThemeContext);
@@ -13,31 +12,38 @@ const FAQPage = () => {
 
   const faqs = [
     {
-      question: "What is InsightfulBlogs?",
+      question: "What is What-a-great-blog?",
       answer:
-        "InsightfulBlogs is a platform where readers and writers connect through diverse and engaging content on technology, lifestyle, personal growth, and much more.",
+        "What-a-great-blog is your go-to platform for discovering diverse, engaging, and thought-provoking content on technology, culture, science, and personal development.",
     },
     {
-      question: "How can I contribute to InsightfulBlogs?",
+      question: "How can I contribute to What-a-great-blog?",
       answer:
-        "You can contribute by signing up, creating an account, and submitting your articles for review. Our editorial team will review and publish your work if it meets our standards.",
+        "You can contribute by creating an account, submitting your articles, and connecting with our editorial team. If your submission meets our guidelines, it will be published to inspire readers worldwide.",
     },
     {
-      question: "Is InsightfulBlogs free to use?",
+      question: "Is What-a-great-blog free to use?",
       answer:
-        "Yes, InsightfulBlogs is completely free for readers and writers. Enjoy our vast library of content at no cost.",
+        "Yes, What-a-great-blog is completely free for readers. Enjoy curated content and explore various perspectives at no cost.",
     },
     {
       question: "How can I contact support?",
       answer:
-        "You can contact support by emailing support@insightfulblogs.com or using the contact form available on our website.",
+        "You can contact our support team by emailing support@what-a-great-blog.in or by using the contact form available on our website.",
+    },
+    {
+      question: "What topics does What-a-great-blog cover?",
+      answer:
+        "Our platform covers a wide array of topics including technology, lifestyle, culture, science, and personal growth, ensuring something valuable for every reader.",
     },
   ];
 
   return (
     <div
       className={`min-h-screen py-16 px-4 transition-colors duration-300 ${
-        theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-900"
+        theme === "dark"
+          ? "bg-gray-900 text-gray-100"
+          : "bg-white text-gray-900"
       }`}
     >
       <div className="container mx-auto max-w-4xl">
@@ -52,7 +58,8 @@ const FAQPage = () => {
             Frequently Asked Questions
           </h1>
           <p className="text-lg">
-            Find answers to some of the most common questions about InsightfulBlogs.
+            Find answers to some of the most common questions about
+            What-a-great-blog.
           </p>
         </motion.div>
 

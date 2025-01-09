@@ -9,7 +9,9 @@ const PrivacyPolicyPage = () => {
   return (
     <div
       className={`min-h-screen px-6 py-12 lg:px-16 lg:py-20 transition-colors duration-300 ${
-        theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-900"
+        theme === "dark"
+          ? "bg-gray-900 text-gray-100"
+          : "bg-white text-gray-900"
       }`}
     >
       <div className="max-w-4xl mx-auto">
@@ -18,9 +20,8 @@ const PrivacyPolicyPage = () => {
           <h2 className="text-2xl font-semibold">Introduction</h2>
           <p className="leading-relaxed">
             Welcome to our blog website. We are committed to protecting your
-            privacy and ensuring a safe browsing experience. This privacy
-            policy outlines how we collect, use, and protect your personal
-            information.
+            privacy and ensuring a safe browsing experience. This privacy policy
+            outlines how we collect, use, and protect your personal information.
           </p>
         </section>
 
@@ -29,7 +30,8 @@ const PrivacyPolicyPage = () => {
           <ul className="list-disc list-inside space-y-2">
             <li>
               <strong>Personal Information:</strong> Name, email address, and
-              other contact details you provide when signing up or contacting us.
+              other contact details you provide when signing up or contacting
+              us.
             </li>
             <li>
               <strong>Usage Data:</strong> IP address, browser type, and usage
@@ -39,10 +41,14 @@ const PrivacyPolicyPage = () => {
         </section>
 
         <section className="space-y-6 mt-8">
-          <h2 className="text-2xl font-semibold">How We Use Your Information</h2>
+          <h2 className="text-2xl font-semibold">
+            How We Use Your Information
+          </h2>
           <ul className="list-disc list-inside space-y-2">
             <li>To personalize your experience on our website.</li>
-            <li>To communicate updates, newsletters, or promotional content.</li>
+            <li>
+              To communicate updates, newsletters, or promotional content.
+            </li>
             <li>To enhance website functionality and security.</li>
           </ul>
         </section>
@@ -92,7 +98,7 @@ const PrivacyPolicyPage = () => {
               href="mailto:support@blogwebsite.com"
               className="text-blue-500 underline ml-1"
             >
-              support@blogwebsite.com
+              support@what-a-great-blog.in
             </a>
             .
           </p>

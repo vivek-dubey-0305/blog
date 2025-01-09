@@ -8,7 +8,7 @@ import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { Blog } from "../models/blog.model.js";
 import { Notification } from "../models/notification.model.js";
 import { Comment } from "../models/comment.model.js";
-import { error } from "console";
+// import { error } from "console";
 
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
@@ -238,6 +238,9 @@ const signIn = async (req, res) => {
 
 //*uploadImageURL
 const uploadImageURL = async (req, res) => {
+    console.log("Received file:", req.file);
+    const localFilePath = req.file.path;
+    console.log("Local file path:", localFilePath);
     // const localFilePath = req.file.path
     try {
         const localFilePath = req.file.path;
@@ -245,6 +248,7 @@ const uploadImageURL = async (req, res) => {
 
         // Upload the image to Cloudinary
         const imageUrl = await uploadOnCloudinary(localFilePath);
+        console.log("imageUrl:", imageUrl)
 
 
         // Send the Cloudinary URL back to the client
@@ -357,7 +361,10 @@ const createBlog = async (req, res) => {
 // *Latest Blogs
 const latestBlogs = async (req, res) => {
 
-    let { page } = req.body
+    const { page } = req.body
+    if (!page || isNaN(page) || page < 1) {
+        return res.status(400).json({ error: "Invalid page number" });
+    }
     let maxLimit = 5;
     Blog.find({ draft: false })
         .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
@@ -365,8 +372,17 @@ const latestBlogs = async (req, res) => {
         .select("blog_id title des banner activity tags publishedAt -_id")
         .skip((page - 1) * maxLimit)
         .limit(maxLimit)
-        .then(blogs => {
+        .lean()
+        .exec()
+        // Ensure all banner URLs are HTTPS
 
+        .then(blogs => {
+            blogs.forEach(blog => {
+                if (blog.banner.startsWith("http://")) {
+                    blog.banner = blog.banner.replace("http://", "https://");
+                }
+            });
+console.log(blogs)
             return res.status(200).json({
                 blogs
             })
@@ -377,8 +393,6 @@ const latestBlogs = async (req, res) => {
             })
         })
 }
-
-
 
 // *TrendingBlogs
 const trendingBlogs = async (req, res) => {
@@ -400,8 +414,6 @@ const trendingBlogs = async (req, res) => {
             })
         })
 }
-
-
 
 // *Search Blogs
 const searchBlogs = async (req, res) => {
@@ -443,7 +455,7 @@ const searchBlogs = async (req, res) => {
 
 // *countAllLatestBlogs
 const countAllLatestBlogs = async (req, res) => {
-    Blog.countDocuments({ draft: false })
+    await Blog.countDocuments({ draft: false }).exec()
         .then(count => {
             return res.status(200).json({
                 totalDocs: count
@@ -534,24 +546,30 @@ const getProfile = async (req, res) => {
 // *getBlog
 const getBlog = async (req, res) => {
     let { blog_id, draft, mode } = req.body
+    console.log(req.body)
 
     let incrementVal = mode != "edit" ? 1 : 0
 
-    Blog.findOneAndUpdate(
+    
+
+    await Blog.findOneAndUpdate(
         {
             blog_id
         },
         { $inc: { "activity.total_reads": incrementVal } }
+
     )
         .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
         .select("title des content banner activity publishedAt blog_id tags")
-        .then(blog => {
+        .then(async (blog) => {
+            console.log("blog:fffffffffffffff", blog.banner)
 
             try {
-                User.findByIdAndUpdate(
+                await User.findOneAndUpdate(
                     { "personal_info.username": blog.author.personal_info.username },
                     { $inc: { "account_info.total_reads": incrementVal } }
                 )
+                console.log("account_info.total_reads",incrementVal)
             } catch (error) {
                 console.log(error)
             }
@@ -566,6 +584,59 @@ const getBlog = async (req, res) => {
         })
 }
 
+// const getBlog = async (req, res) => {
+//     let { blog_id, draft, mode } = req.body;
+//     console.log(req.body);
+//     const user_id = req.user
+//     console.log("user_id:", user_id)
+//     let incrementVal = mode !== "edit" ? 1 : 0;
+
+//     try {
+//         // Fetch the blog first to check the author
+//         const blog = await Blog.findOne({ blog_id })
+//             .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
+//             .select("title des content banner activity publishedAt blog_id tags author draft");
+
+//         if (!blog) {
+//             return res.status(404).json({ error: "Blog not found" });
+//         }
+
+//         console.log("blog.author._id:",blog.author._id)
+
+//         // If the requesting user is the author, do not increment read count
+//         if (String(req.user) === String(blog.author._id)) {
+//             console.log("Blog accessed by its owner. No read count update.");
+//             return res.status(200).json({ blog });
+//         }
+
+//         // Increment blog activity and user account stats
+//         if (incrementVal === 1) {
+//             await Blog.findOneAndUpdate(
+//                 { blog_id },
+//                 { $inc: { "activity.total_reads": incrementVal } }
+//             );
+
+//             await User.findOneAndUpdate(
+//                 { _id: blog.author._id },
+//                 { $inc: { "account_info.total_reads": incrementVal } }
+//             );
+
+//             console.log("Read count updated for blog and author.");
+//         }
+
+//         // If the blog is a draft and the draft flag is not set, return an error
+//         if (blog.draft && !draft) {
+//             return res.status(403).json({ error: "You cannot access draft blogs" });
+//         }
+
+//         // Return the blog data
+//         return res.status(200).json({ blog });
+
+//     } catch (err) {
+//         console.error(err);
+//         return res.status(500).json({ error: err.message });
+//     }
+// };
 
 
 // *likeBlog
@@ -974,9 +1045,10 @@ const updateProfile = async (req, res) => {
 
 const newNotification = async (req, res) => {
     let user_id = req.user
+    // console.log(user_id)
 
 
-    Notification.exists(
+    await Notification.exists(
         {
             notification_for: user_id,
             seen: false,
@@ -987,16 +1059,18 @@ const newNotification = async (req, res) => {
 
         .then(result => {
             if (result) {
+                // console.log("rsult:", result)
                 return res.status(200).json({ new_notification_available: true })
             }
             else {
+                // console.log("unauth")
                 return res.status(200).json({ new_notification_available: false })
 
             }
         })
 
         .catch(err => {
-            console.log(err.message)
+            console.log("err.message")
             return res.status(500).json({ error: err.message })
 
         })

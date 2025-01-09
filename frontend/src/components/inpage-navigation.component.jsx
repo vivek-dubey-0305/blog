@@ -1,4 +1,4 @@
-import Reeact, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export let activeTabRef;
 export let activeTabLineRef;
@@ -70,7 +70,10 @@ const InPageNavigation = ({
           );
         })}
 
-        <hr ref={activeTabLineRef} className="absolute bottom-0 duration-300 border-dark-grey" />
+        <hr
+          ref={activeTabLineRef}
+          className="absolute bottom-0 duration-300 border-dark-grey"
+        />
       </div>
 
       {Array.isArray(children) ? children[inPageNavIndex] : children}

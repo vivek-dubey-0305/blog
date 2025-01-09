@@ -26,7 +26,7 @@ const UserNavigationPanel = () => {
         {isAdmin ? (
           <Link to="/editor" className="flex gap-2 link md:hidden pl-8 py-4">
             <i className="fi fi-rr-file-edit"></i>
-            <p>Wrirtete</p>
+            <p>Write</p>
           </Link>
         ) : (
           ""

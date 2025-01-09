@@ -11,6 +11,9 @@ export const verifyJWT = async (req, res, next) => {
         } else {
             console.log('we are running on the server');
         }
+        // const cok = req.header("Authorization")?.replace("Bearer ", "")
+        // console.log(req.cookies.access_token)
+        // console.log(cok)
         const token = req.cookies?.access_token || req.header("Authorization")?.replace("Bearer ", "");
         // console.log("token: \n", token)
 
@@ -36,7 +39,7 @@ export const verifyJWT = async (req, res, next) => {
 
         req.user = user.id;
         req.admin = user.admin;
-        console.log("req.user: (29)", req.user, req.admin)
+        // console.log("req.user: (29)", req.user, req.admin)
         next();
 
     } catch (error) {

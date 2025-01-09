@@ -14,12 +14,24 @@ const AboutUser = ({ className, bio, social_links, joinedAt }) => {
           return link ? (
             <Link to={link} key={key} target="_blank">
               <i
-                className={
-                  "fi " +
-                  (key != "website" ? "fi-brands-" + key : "fi-rr-globe") +
-                  " text-2xl hover:text-black"
-                }
-              ></i>
+                className={`fi ${
+                  key !== "website" ? "fi-brands-" + key : "fi-rr-globe"
+                } text-2xl ${
+                  key === "youtube"
+                    ? "hover:text-red"
+                    : key === "facebook"
+                    ? "hover:text-blue-600"
+                    : key === "twitter"
+                    ? "hover:text-blue-600"
+                    : key === "instagram"
+                    ? "hover:text-pink-600"
+                    : key === "github"
+                    ? "hover:text-gray-900"
+                    : key === "discord"
+                    ? "hover:text-gray-900"
+                    : "hover:text-black"
+                }`}
+              />
             </Link>
           ) : (
             " "
@@ -28,7 +40,6 @@ const AboutUser = ({ className, bio, social_links, joinedAt }) => {
       </div>
 
       <p className="text-xl leading-7 text-dark-grey">
-        
         Joined At : {getFullDay(joinedAt)}
       </p>
     </div>

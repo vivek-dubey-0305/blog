@@ -13,6 +13,7 @@ const blogSchema = new Schema({
     },
     banner: {
         type: String,
+
         // required: true,
     },
     des: {
@@ -67,6 +68,20 @@ const blogSchema = new Schema({
         }
 
     })
+
+// Middleware to ensure the banner URL is HTTPS
+blogSchema.pre('save', function (next) {
+    if (this.banner && this.banner.startsWith('http://')) {
+        this.banner = this.banner.replace('http://', 'https://');
+    }
+    next();
+});
+
+
+// Indexes
+blogSchema.index({ publishedAt: -1 }); // For sorting latest blogs
+blogSchema.index({ 'activity.total_reads': -1, 'activity.total_likes': -1 }); // For trending blogs
+blogSchema.index({ tags: 1 }); // For category-based search
 
 // export default mongoose.model("blogs", blogSchema);
 export const Blog = mongoose.model("Blog", blogSchema);

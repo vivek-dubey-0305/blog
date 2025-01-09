@@ -1,12 +1,16 @@
 import React, { useContext } from "react";
 import { motion } from "framer-motion";
-import { ThemeContext } from "../App";
+import { ThemeContext, UserContext } from "../App";
+import { Link } from "react-router-dom";
 // import { ThemeContext } from "../context/theme.context";
 
 const AboutPage = () => {
   const { theme } = useContext(ThemeContext);
+  const {
+    userAuth: { access_token },
+  } = useContext(UserContext);
 
-  const fadeIn = {
+  const fadeIn = {  
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.6 },
@@ -54,10 +58,11 @@ const AboutPage = () => {
         <motion.div className="grid md:grid-cols-2 gap-12 mb-20" {...fadeIn}>
           <div className="space-y-6">
             <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-            <p>
-              InsightfulBlogs is your gateway to a world of diverse perspectives
-              and deep insights. We curate thought-provoking content across
-              technology, culture, science, and personal development.
+            <p className="text-xl">
+              What-a-great-blog brings you captivating stories and
+              transformative ideas from technology, culture, science, and
+              personal growth. Experience content that inspires, informs, and
+              ignites curiosity in every reader.
             </p>
             <div
               className={`group p-6 rounded-xl transition-all duration-300 ${
@@ -109,13 +114,16 @@ const AboutPage = () => {
               writers. Share your insights, engage in meaningful discussions,
               and connect with fellow knowledge seekers.
             </p>
-            <button
-              className={`bg-gradient-to-r from-purple-500 to-blue-500 px-8 py-3 rounded-full font-semibold hover:from-purple-600 hover:to-blue-600 transform hover:-translate-y-1 transition-all duration-300 ${
-                theme == "dark" ? " text-black" : " text-black"
-              }`}
-            >
-              Start Writing
-            </button>
+
+            <Link to={`${access_token ? "/editor" : "/signin"}`}>
+              <button
+                className={`bg-gradient-to-r from-purple-500 to-blue-500 px-8 py-3 rounded-full font-semibold hover:from-purple-600 hover:to-blue-600 transform hover:-translate-y-1 transition-all duration-300 ${
+                  theme == "dark" ? " text-black" : " text-black"
+                }`}
+              >
+                Start Writing
+              </button>
+            </Link>
           </div>
         </motion.div>
       </div>
