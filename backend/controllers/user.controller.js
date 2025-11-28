@@ -399,7 +399,7 @@ const trendingBlogs = async (req, res) => {
     let maxLimit = 5;
     Blog.find({ draft: false })
         .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
-        .sort({ "activity.total_read": -1, "activity.total_likes": -1, "publishedAt": -1 })
+        .sort({ "activity.total_reads": -1, "activity.total_likes": -1, "publishedAt": -1 })
         .select("blog_id title des publishedAt -_id")
         .limit(maxLimit)
         .then(blogs => {
@@ -857,8 +857,6 @@ const getReplies = async (req, res) => {
         })
 
 }
-
-
 
 
 // *deleteComment

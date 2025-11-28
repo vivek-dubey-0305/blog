@@ -58,21 +58,15 @@ const HomePage = () => {
 
   const fetchLatestBlogs = async ({ page = 1 }) => {
     try {
-      await axios
-        .post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", { page })
-        .then(async ({ data }) => {
-          // console.log(data)
-          let formatedData = await filterPaginationData({
-            state: blogs,
-            data: data.blogs,
-            page,
-            countRoute: "/all-latest-blogs-count",
-          });
-          setBlogs(formatedData);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      const { data } = await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", { page });
+      // console.log(data)
+      let formatedData = await filterPaginationData({
+        state: blogs,
+        data: data.blogs,
+        page,
+        countRoute: "/all-latest-blogs-count",
+      });
+      setBlogs(formatedData);
     } catch (error) {
       console.error("Error-", error);
     }

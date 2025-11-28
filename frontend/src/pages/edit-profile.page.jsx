@@ -302,7 +302,7 @@ const EditProfile = () => {
                     />
                   );
                 })}
-              </div>
+              </div>  
 
               <button
                 className="btn-dark w-auto px-10"

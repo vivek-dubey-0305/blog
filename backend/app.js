@@ -13,9 +13,11 @@ const app = express();
 
 //!----------------------------------------------------------------!//
 // * CORS: For Connecting Backend To Fronted
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
+
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || origin === process.env.CORS_ORIGIN) {
+        if (!origin || allowedOrigins.includes(origin.trim())) {
             callback(null, true);
         } else {
             console.error(`Blocked by CORS: ${origin}`);

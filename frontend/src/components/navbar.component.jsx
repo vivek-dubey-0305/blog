@@ -147,7 +147,7 @@ const Navbar = () => {
             <i className="fi fi-rr-search"></i>
           </button>
 
-          {isAdmin ? (
+          {access_token ? (
             <Link
               to="/editor"
               // onClick={(e) => setPageState(e.target.innerText)}

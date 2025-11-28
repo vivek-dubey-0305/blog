@@ -24,6 +24,7 @@
     "@react-three/drei": "^9.120.5",
     "@react-three/fiber": "^8.17.10",
     "axios": "^1.4.0",
+    "caniuse-lite": "^1.0.30001756",
     "firebase": "^10.1.0",
     "framer-motion": "^10.13.0",
     "js-cookie": "^3.0.5",

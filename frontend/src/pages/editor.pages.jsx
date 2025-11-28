@@ -38,7 +38,7 @@ const Editor = () => {
 
   //*USER AUTH STATE from userContext
   let {
-    userAuth: { access_token, isAdmin },
+    userAuth: { access_token },
   } = useContext(UserContext);
 
   useEffect(() => {
@@ -74,9 +74,7 @@ const Editor = () => {
         setTextEditor,
       }}
     >
-      {!isAdmin ? (
-        <Navigate to="/404" />
-      ) : access_token === null ? (
+      {access_token === null ? (
         <Navigate to="/signin" />
       ) : loading ? (
         <Loader />

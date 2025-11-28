@@ -24,21 +24,19 @@ const UserAuthForm = ({ type }) => {
   } = useContext(UserContext);
 
   const userAuthThroughServer = async (serverRoute, formData) => {
-    await axios
-      .post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData, {
+    try {
+      const { data } = await axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData, {
         headers: { "Content-Type": "application/json" },
-      })
-      .then(({ data }) => {
-        //* storing the user data in session
-        // storeInSession("user", JSON.stringify(data));
-        //*Storing in cookies instead
-        storeInCookies("user", JSON.stringify(data));
-
-        // setUserAuth(data);
-      })
-      .catch(({ response }) => {
-        toast.error(response.data.error);
       });
+      //* storing the user data in session
+      // storeInSession("user", JSON.stringify(data));
+      //*Storing in cookies instead
+      storeInCookies("user", JSON.stringify(data));
+      return true;
+    } catch ({ response }) {
+      toast.error(response?.data?.error || "An error occurred");
+      return false;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -46,7 +44,7 @@ const UserAuthForm = ({ type }) => {
 
     let serverRoute = type == "sign-in" ? "/signin" : "/signup";
 
-    let form = new FormData(formElements);
+    let form = new FormData(e.target.form);
 
     let formData = {};
 
@@ -54,8 +52,10 @@ const UserAuthForm = ({ type }) => {
       formData[key] = value;
     }
 
-    await userAuthThroughServer(serverRoute, formData);
-    window.location.reload();
+    const success = await userAuthThroughServer(serverRoute, formData);
+    if (success) {
+      window.location.reload();
+    }
   };
 
   //? wafter navigation to /, we needa remove the singin/up button
