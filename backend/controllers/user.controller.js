@@ -239,6 +239,9 @@ const signIn = async (req, res) => {
 //*uploadImageURL
 const uploadImageURL = async (req, res) => {
     console.log("Received file:", req.file);
+    if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+    }
     const localFilePath = req.file.path;
     console.log("Local file path:", localFilePath);
     // const localFilePath = req.file.path
