@@ -57,7 +57,7 @@ const BlogEditor = () => {
     const timeout = setTimeout(() => {
       setTextEditor(
         new EditorJs({
-          holderId: "textEditor",
+          holder: "textEditor",
           data: Array.isArray(content) ? content[0] : content,
           tools: tools,
           placeholder: "Let's Write a Blog!",
@@ -82,7 +82,7 @@ const BlogEditor = () => {
         if (responseImageURL) {
           // console.log(responseImageURL)
           toast.dismiss(loadingToast);
-          toast.success("Uploades ✌️");
+          toast.success("Uploaded ✌️");
           //?Using blog state doesn't need anymore of refrence
           //! blogBannerRef.current.src = responseImageURL;
 
@@ -90,7 +90,7 @@ const BlogEditor = () => {
           setBlog({ ...blog, banner: responseImageURL });
         }
       } catch (error) {
-        return toast.error(error);
+        return toast.error(error.message || "Upload failed");
       }
     }
   };
