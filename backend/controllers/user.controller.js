@@ -244,7 +244,7 @@ const uploadImageURL = async (req, res) => {
     }
     try {
         // Upload the image to Cloudinary
-        const imageUrl = await uploadOnCloudinary(req.file.buffer);
+        const imageUrl = await uploadOnCloudinary(req.file.buffer, req.file.mimetype);
         console.log("imageUrl:", imageUrl)
 
         // Send the Cloudinary URL back to the client

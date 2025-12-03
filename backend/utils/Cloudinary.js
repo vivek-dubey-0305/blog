@@ -15,7 +15,7 @@ cloudinary.config({
 });
 
 
-const uploadOnCloudinary = async (buffer) => {
+const uploadOnCloudinary = async (buffer, mimetype) => {
     console.log(process.env.CLOUDINARY_CLOUD_NAME); // should print your Cloudinary cloud name
     console.log(process.env.CLOUDINARY_API_KEY);    // should print your Cloudinary API key
     console.log(process.env.CLOUDINARY_API_SECRET); // should print your Cloudinary API secret
@@ -25,8 +25,10 @@ const uploadOnCloudinary = async (buffer) => {
         if (!buffer) {
             return null;
         }
+        const base64 = buffer.toString('base64');
+        const dataURI = `data:${mimetype};base64,${base64}`;
         // upload file on cloudinary
-        const response = await cloudinary.uploader.upload(buffer, {
+        const response = await cloudinary.uploader.upload(dataURI, {
             resource_type: "image",
             secure: true,
         });
