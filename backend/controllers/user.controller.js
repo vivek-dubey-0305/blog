@@ -261,99 +261,88 @@ const createBlog = async (req, res) => {
     let isAdmin = req.admin;
     console.log("Admin :", isAdmin)
 
+    let { title, des, banner, tags, content, draft, id } = req.body;
 
-    if (isAdmin) {
+    if (!title.length) {
+        return res.status(403).json({ error: "You must provide a title to publish a BLog! " })
+    }
 
-        let { title, des, banner, tags, content, draft, id } = req.body;
+    if (!draft) {
 
-        if (!title.length) {
-            return res.status(403).json({ error: "You must provide a title to publish a BLog! " })
+        if (!des.length || des.length > 200) {
+            return res.status(403).json({ error: "You must provide a descripton to publish a BLog! " })
         }
 
-        if (!draft) {
-
-            if (!des.length || des.length > 200) {
-                return res.status(403).json({ error: "You must provide a descripton to publish a BLog! " })
-            }
-
-            if (!banner.length) {
-                return res.status(403).json({ error: "You must provide a banner to publish a BLog! " })
-            }
-
-            if (!content.blocks.length) {
-                return res.status(403).json({ error: "You must provide a Content to publish a BLog! " })
-            }
-
-            if (!tags.length || tags.length > 10) {
-                return res.status(403).json({ error: "You must provide a tags(10) to publish a BLog! " })
-            }
+        if (!banner.length) {
+            return res.status(403).json({ error: "You must provide a banner to publish a BLog! " })
         }
-        tags = tags.map(tag => tag.toLowerCase());
-        let blog_id = id || title.replace(/[^a-zA-Z0-9]/g, " ").replace(/\s+/g, "-").trim() + nanoid();
+
+        if (!content.blocks.length) {
+            return res.status(403).json({ error: "You must provide a Content to publish a BLog! " })
+        }
+
+        if (!tags.length || tags.length > 10) {
+            return res.status(403).json({ error: "You must provide a tags(10) to publish a BLog! " })
+        }
+    }
+    tags = tags.map(tag => tag.toLowerCase());
+    let blog_id = id || title.replace(/[^a-zA-Z0-9]/g, " ").replace(/\s+/g, "-").trim() + nanoid();
 
 
 
-        if (id) {
-            Blog.findOneAndUpdate({ blog_id }, { title, des, banner, content, tags, draft: draft ? draft : false })
-                .then(blog => {
-                    return res.status(200).json({
-                        id: blog_id
-                    })
+    if (id) {
+        Blog.findOneAndUpdate({ blog_id }, { title, des, banner, content, tags, draft: draft ? draft : false })
+            .then(blog => {
+                return res.status(200).json({
+                    id: blog_id
                 })
-                .catch(err => {
-                    return res.status(500).json({
-                        error: err.message
-                    })
-                })
-        }
-        else {
-            //*Saving the blog in the blog model
-            let blog = new Blog({
-                title, des, banner, content, tags, author: authorId, blog_id, draft: Boolean(draft)
             })
-
-
-
-            await blog.save().then(async (blog) => {
-                let incrementVal = draft ? 0 : 1;
-
-                await User.findOneAndUpdate(
-                    { _id: authorId },
-                    {
-                        $inc: { "account_info.total_posts": incrementVal },
-                        $push: { "blogs": blog._id }
-                    },
-                    { new: true }
-                )
-                    .then(user => {
-                        console.log("SEding respONSE...")
-                        return res.status(200).json({
-                            id: blog.blog_id
-                        })
-                    })
-                    .catch(err => {
-
-                        return res.status(500).json({
-                            error: "Failed to update total post number"
-                        })
-                    })
-            })
-                .catch(err => {
-                    return res.status(500).json({
-                        error: err.message
-                    })
+            .catch(err => {
+                return res.status(500).json({
+                    error: err.message
                 })
-        }
-
-    } else {
-        return res.status(403).json({
-            error: "You do not have any permission to write the blog, you aren't admin!"
+            })
+    }
+    else {
+        //*Saving the blog in the blog model
+        let blog = new Blog({
+            title, des, banner, content, tags, author: authorId, blog_id, draft: Boolean(draft)
         })
+
+
+
+        await blog.save().then(async (blog) => {
+            let incrementVal = draft ? 0 : 1;
+
+            await User.findOneAndUpdate(
+                { _id: authorId },
+                {
+                    $inc: { "account_info.total_posts": incrementVal },
+                    $push: { "blogs": blog._id }
+                },
+                { new: true }
+            )
+                .then(user => {
+                    console.log("SEding respONSE...")
+                    return res.status(200).json({
+                        id: blog.blog_id
+                    })
+                })
+                .catch(err => {
+
+                    return res.status(500).json({
+                        error: "Failed to update total post number"
+                    })
+                })
+        })
+            .catch(err => {
+                return res.status(500).json({
+                    error: err.message
+                })
+            })
     }
 
 }
-
-
 // *Latest Blogs
 const latestBlogs = async (req, res) => {
 
