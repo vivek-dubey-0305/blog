@@ -242,17 +242,10 @@ const uploadImageURL = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
     }
-    const localFilePath = req.file.path;
-    console.log("Local file path:", localFilePath);
-    // const localFilePath = req.file.path
     try {
-        const localFilePath = req.file.path;
-
-
         // Upload the image to Cloudinary
-        const imageUrl = await uploadOnCloudinary(localFilePath);
+        const imageUrl = await uploadOnCloudinary(req.file.buffer);
         console.log("imageUrl:", imageUrl)
-
 
         // Send the Cloudinary URL back to the client
         res.status(200).json({ imageUrl });
